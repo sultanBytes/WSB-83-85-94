@@ -7,6 +7,8 @@ const token = 'e5432';
 const checkToken = (req, res, next) => {
     const userToken = req.params.val;
 
+    console.log(userToken);
+
     if (!userToken) {
         res.status(400).json({msg:'Please add token'});
     }
@@ -19,6 +21,7 @@ const checkToken = (req, res, next) => {
     }
 };
 
+app.use(express.json());
 app.use(checkToken);
 
 app.get('/user/:val?', (req, res) => {
