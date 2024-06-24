@@ -3,9 +3,25 @@ import Header from '../Common/Header'
 import logo from '../img/logo (1).svg';
 
 import { Link, useNavigate } from 'react-router-dom';
+// import { Cookie } from '@mui/icons-material';
+import Cookies from 'js-cookie';
 function Login() {
-
   const nav = useNavigate();
+
+  const IfAdminLoggedIn = ()=>{
+
+    const ifAdmin = Cookies.get('admin');
+    console.log(ifAdmin);
+
+    if(ifAdmin){
+      nav('/dashboard');
+    }
+
+  };
+
+  useEffect(()=>{IfAdminLoggedIn()}, []);
+
+ 
 
   const [admindata, setAdmindata] = useState({});
 
@@ -25,8 +41,9 @@ function Login() {
     if(response.status === 200){
       const data = await response.json();
 
-      console.log(data);
+      // console.log(data.data[0]);
 
+      Cookies.set('admin', JSON.stringify(data.data[0]));
       nav('/dashboard');
     }
     else{
