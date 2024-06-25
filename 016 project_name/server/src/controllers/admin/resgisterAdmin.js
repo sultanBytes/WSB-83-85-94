@@ -9,7 +9,7 @@ const registerAdmin = async () => {
 
     const ifAdmin = await Admin.find();
 
-    if(ifAdmin.length !== 0) return console.log(ifAdmin[0]);
+    // if(ifAdmin.length !== 0) return console.log(ifAdmin[0]);
 
     let mail = process.env.ADMIN_EMAIL;
     let password = process.env.ADMIN_PASSWORD;
@@ -23,7 +23,7 @@ const registerAdmin = async () => {
 
     const response = await adminData.save();
 
-    console.log(response);
+    // console.log(response);
 
     ifRegistred = true;
 };
