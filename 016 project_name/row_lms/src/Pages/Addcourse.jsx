@@ -5,10 +5,34 @@ import DashboardItems from '../Common/DashboardItems'
 import Footer from '../Common/Footer'
 import { mainContext } from '../Context'
 import prev from '../img/generic-image-file-icon-hi.png'
+import axios from 'axios'
+import { useNavigate } from 'react-router'
 // import AdminForms from '../Common/AdminForms'
 
 function Addcourse() {
+  const nav = useNavigate();
   let {changemenu} = useContext(mainContext);
+
+  const handleAddCourse = async (e)=>{
+    e.preventDefault();
+
+    const form = e.target;
+    const formData = new FormData(form);
+
+    const response = await axios.post('http://localhost:5200/course/add_course',formData,{});
+
+    if(response.status != 200) return alert('something went wrong');
+
+    nav('/viewcourse');
+
+    try{
+
+    }
+    catch(error){
+      console.log(error);
+      alert('something went wrong');
+    }
+  };
   return (
     <div>
 
@@ -24,7 +48,7 @@ function Addcourse() {
         </h1>
         <div className=''>
           <div className='bg-white w-[100%] mb-[50px] p-4 h-full rounded-[20px]'>
-          <form action="">
+          <form action="" onSubmit={handleAddCourse}>
             Courses Name
             <input type="text" name='coursename' className='border px-4 border-gray-400 w-full h-[50px] mb-3 mt-2 '  />
             Courses Price
@@ -45,8 +69,8 @@ function Addcourse() {
             </div>
             Courses Stauts
             <div className='flex items-center mt-5  mb-8 gap-2'>
-            <input type="radio" name='status' className='mx-2 w-[20px] h-[20px] text-[20px]'  /> Active
-            <input type="radio"  name='status' className='mx-2 w-[20px] h-[20px] text-[20px]'  /> Deactive
+            <input type="radio" value={true} name='status' className='mx-2 w-[20px] h-[20px] text-[20px]'  /> Active
+            <input type="radio" value={false} name='status' className='mx-2 w-[20px] h-[20px] text-[20px]'  /> Deactive
             </div>
             
             <input type="submit" className='bg-[#4B49AC] mb-8 mt-7 text-[18px] px-8 py-2 rounded-[10px] text-white' />
