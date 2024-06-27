@@ -1,11 +1,50 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { mainContext } from '../Context';
 import Header from '../Common/Header';
 import Sidebar from '../Common/Sidebar';
 import Footer from '../Common/Footer';
+import axios from 'axios';
 
 function Viewcourse() {
   let {changemenu} = useContext(mainContext);
+  const [courseData, setCourseData] = useState([]);
+  const [filePath, setFilePath] = useState('');
+
+  console.log(courseData);
+
+  const handleFetchCourse = async()=>{
+    try{
+
+      const response = await axios.get('http://localhost:5200/course/read_courses');
+
+      if(response.status !== 200) return alert('Something went wrong');
+
+      setFilePath(response.data.filePath);
+
+      setCourseData(response.data.data);
+
+    }catch(error){
+      console.log(error);
+      alert('Something went wrong');
+    }
+  };
+
+  useEffect(()=>{handleFetchCourse()},[]);
+  
+  const handleStatus = async (e)=>{
+    const statusData = {
+      id:e.target.value,
+      status: (e.target.textContent === 'Active') ? false : true
+    }
+
+    const response = await axios.put('http://localhost:5200/course/change_course_status', statusData, {
+      headers:{
+        'Content-Type':'application/json'
+      }
+    });
+    handleFetchCourse();
+  };
+
   return (
     <div>
 
@@ -32,22 +71,35 @@ function Viewcourse() {
               <th>Status</th>
               <th>Action</th>
             </tr>
-            <tr>
-              <td>1</td>
-              <td>React</td>
-              <td>20000</td>
-              <td>1 month</td>
-              <td>This is new React Course</td>
-              <td>React.png</td>
-              <td>1</td>
-              <td className='text-center'>
 
-              <button className='bg-green-500 text-white px-5 mr-5 py-1'>Edit</button>
-              <button className='bg-red-400 text-white px-5 py-1'>Delete</button>
+            {
+              courseData.map((course, i)=>{
+                return(
+                  <tr>
+                  <td>{i + 1}</td>
+                  <td>{course.coursename}</td>
+                  <td>{course.courseprice}</td>
+                  <td>{course.courseduration}</td>
+                  <td>{course.coursedes}</td>
+                  <td>
+                    <img src={filePath + course.thumbnail} className='w-[100px]' />
+                  </td>
+                  <td>
+                    <button value={course._id} onClick={handleStatus} className={`p-[4px_8px] ${((course.status) ? 'bg-[green]' : 'bg-[red]')} rounded text-[white]`}>{(course.status) ? 'Active' : 'Inactive'}</button>
 
-
-              </td>
-            </tr>
+                  </td>
+                  <td className='text-center'>
+    
+                  <button className='bg-green-500 text-white px-5 mr-5 py-1'>Edit</button>
+                  <button className='bg-red-400 text-white px-5 py-1'>Delete</button>
+    
+    
+                  </td>
+                </tr>
+                )
+              })
+            }
+           
           </table>
         </div>
         </div>
