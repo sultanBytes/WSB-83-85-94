@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Header from '../Common/Header'
 import Sidebar from '../Common/Sidebar'
 import DashboardItems from '../Common/DashboardItems'
@@ -6,11 +6,32 @@ import Footer from '../Common/Footer'
 import { mainContext } from '../Context'
 import prev from '../img/generic-image-file-icon-hi.png'
 import axios from 'axios'
-import { useNavigate } from 'react-router'
+import { useNavigate, useParams } from 'react-router'
 // import AdminForms from '../Common/AdminForms'
 
 function Addcourse() {
   const nav = useNavigate();
+  const params = useParams();
+  const [data, setData] = useState({});
+  const [status, setStatus] = useState(false);
+
+
+  const fetchdata = async (id)=>{
+    const res = await axios.get(`http://localhost:5200/course/fetch_course_with_id/${id}`);
+    setData(res.data.data);
+    setStatus(res.data.data.status)
+
+    console.log(res.data.data);
+  };
+
+    useEffect(()=>{
+      if(params._id){
+        fetchdata(params._id);
+      }
+    },[]);
+    
+
+
   let {changemenu} = useContext(mainContext);
 
   const [imgPrev, setImgPrev] = useState('');
@@ -39,7 +60,6 @@ function Addcourse() {
   const handleImgPrev = (e)=>{
     const reader = new FileReader();
 
-    console.log(reader);
 
     const file = e.target.files[0];
 
@@ -51,6 +71,22 @@ function Addcourse() {
       setImgPrev(reader.result)
     }
   };
+
+  const handleDataUpdate = (e)=>{
+    const olddata = {...data};
+    olddata[e.target.name] = e.target.value;
+
+    setData(olddata);
+  }
+
+  const handleStatusUpdate = (e)=>{
+
+    // console.log(e.target.value, e.target.name);
+    const olddata = {...data};
+    olddata[e.target.name] = e.target.value;
+
+    setData(olddata);
+  }
 
   return (
     <div>
@@ -69,13 +105,13 @@ function Addcourse() {
           <div className='bg-white w-[100%] mb-[50px] p-4 h-full rounded-[20px]'>
           <form action="" onSubmit={handleAddCourse}>
             Courses Name
-            <input type="text" name='coursename' className='border px-4 border-gray-400 w-full h-[50px] mb-3 mt-2 '  />
+            <input type="text" value={data.coursename} onChange={handleDataUpdate} name='coursename' className='border px-4 border-gray-400 w-full h-[50px] mb-3 mt-2 '  />
             Courses Price
-            <input type="text" name='courseprice' className='border px-4 border-gray-400 w-full h-[50px] mb-3 mt-2 '  />
+            <input type="text" value={data.courseprice} onChange={handleDataUpdate} name='courseprice' className='border px-4 border-gray-400 w-full h-[50px] mb-3 mt-2 '  />
             Courses Duration
-            <input type="text" name='courseduration' className='border px-4 border-gray-400 w-full h-[50px] mb-3 mt-2 '  />
+            <input type="text" value={data.courseduration} onChange={handleDataUpdate} name='courseduration' className='border px-4 border-gray-400 w-full h-[50px] mb-3 mt-2 '  />
             Courses Description
-            <textarea name="coursedes" id="" className='border px-4 pt-3 border-gray-400 my-2 w-full h-[100px]' cols="30" rows="10"></textarea>
+            <textarea name="coursedes" value={data.coursedes} onChange={handleDataUpdate} id="" className='border px-4 pt-3 border-gray-400 my-2 w-full h-[100px]' cols="30" rows="10"></textarea>
             <input type="file" onChange={handleImgPrev} name='thumbnail' id='file-input' className='border hidden border-gray-400 w-full h-[50px] mb-3 mt-2 '/>
             <div className='flex items-center gap-0 mt-[80px]'>
               <div className='w-full flex items-center'>
@@ -83,13 +119,13 @@ function Addcourse() {
             <label id="file-input-label" for="file-input" className='border block  bg-[#4B49AC] text-white text-center leading-[50px]  w-[10%] rounded-[0px_20px_20px_0px] h-[50px]  '>Upload</label>
             </div>
             <div className=''>
-              <img src={imgPrev || prev} alt="" width={150} />
+              <img src={imgPrev || data.thumbnail || prev} alt="" width={150} />
             </div>
             </div>
             Courses Stauts
             <div className='flex items-center mt-5  mb-8 gap-2'>
-            <input type="radio" value={true} name='status' className='mx-2 w-[20px] h-[20px] text-[20px]'  /> Active
-            <input type="radio" value={false} name='status' className='mx-2 w-[20px] h-[20px] text-[20px]'  /> Deactive
+            <input type="radio" onClick={handleStatusUpdate}  checked={status || (data.status) ? true : false} value={true} name='status' className='mx-2 w-[20px] h-[20px] text-[20px]'  /> Active
+            <input type="radio" onClick={handleStatusUpdate} checked={status || (data.status) ? false : true} value={false} name='status' className='mx-2 w-[20px] h-[20px] text-[20px]'  /> Deactive
             </div>
             
             <input type="submit" className='bg-[#4B49AC] mb-8 mt-7 text-[18px] px-8 py-2 rounded-[10px] text-white' />

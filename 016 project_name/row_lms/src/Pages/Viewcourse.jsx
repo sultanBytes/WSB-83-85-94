@@ -4,8 +4,12 @@ import Header from '../Common/Header';
 import Sidebar from '../Common/Sidebar';
 import Footer from '../Common/Footer';
 import axios from 'axios';
+import { useNavigate } from 'react-router';
 
 function Viewcourse() {
+  const nav = useNavigate();
+
+
   let {changemenu} = useContext(mainContext);
   const [courseData, setCourseData] = useState([]);
   const [filePath, setFilePath] = useState('');
@@ -43,6 +47,10 @@ function Viewcourse() {
       }
     });
     handleFetchCourse();
+  };
+
+  const handleUpdate = (e)=>{
+    nav(`/addcourse/${e.target.value}`);
   };
 
   return (
@@ -90,7 +98,7 @@ function Viewcourse() {
                   </td>
                   <td className='text-center'>
     
-                  <button className='bg-green-500 text-white px-5 mr-5 py-1'>Edit</button>
+                  <button value={course._id} className='bg-green-500 text-white px-5 mr-5 py-1' onClick={handleUpdate}>Edit</button>
                   <button className='bg-red-400 text-white px-5 py-1'>Delete</button>
     
     
