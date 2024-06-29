@@ -13,15 +13,16 @@ function Addcourse() {
   const nav = useNavigate();
   const params = useParams();
   const [data, setData] = useState({});
-  const [status, setStatus] = useState(false);
+
 
 
   const fetchdata = async (id)=>{
     const res = await axios.get(`http://localhost:5200/course/fetch_course_with_id/${id}`);
-    setData(res.data.data);
-    setStatus(res.data.data.status)
 
-    console.log(res.data.data);
+    const oldData = res.data.data;
+
+    oldData.status = oldData.status.toString();
+    setData(oldData);
   };
 
     useEffect(()=>{
@@ -42,6 +43,23 @@ function Addcourse() {
     const form = e.target;
     const formData = new FormData(form);
 
+    if(params._id){
+      try{
+        const response = await axios.put(`http://localhost:5200/course/update_course/${params._id}`,formData);
+
+        if(response.status != 200) return alert('something went wrong');
+
+        nav('/viewcourse');
+      }
+      catch(error){
+        console.log(error);
+        alert('something went wrong');
+      }
+
+    }
+    else{
+      
+
     const response = await axios.post('http://localhost:5200/course/add_course',formData,{});
 
     if(response.status != 200) return alert('something went wrong');
@@ -55,6 +73,8 @@ function Addcourse() {
       console.log(error);
       alert('something went wrong');
     }
+    }
+    
   };
 
   const handleImgPrev = (e)=>{
@@ -79,14 +99,6 @@ function Addcourse() {
     setData(olddata);
   }
 
-  const handleStatusUpdate = (e)=>{
-
-    // console.log(e.target.value, e.target.name);
-    const olddata = {...data};
-    olddata[e.target.name] = e.target.value;
-
-    setData(olddata);
-  }
 
   return (
     <div>
@@ -124,8 +136,8 @@ function Addcourse() {
             </div>
             Courses Stauts
             <div className='flex items-center mt-5  mb-8 gap-2'>
-            <input type="radio" onClick={handleStatusUpdate}  checked={status || (data.status) ? true : false} value={true} name='status' className='mx-2 w-[20px] h-[20px] text-[20px]'  /> Active
-            <input type="radio" onClick={handleStatusUpdate} checked={status || (data.status) ? false : true} value={false} name='status' className='mx-2 w-[20px] h-[20px] text-[20px]'  /> Deactive
+            <input type="radio" onClick={handleDataUpdate}  checked={data.status == 'true'} value={true} name='status' className='mx-2 w-[20px] h-[20px] text-[20px]'  /> Active
+            <input type="radio" onClick={handleDataUpdate} checked={data.status == 'false'} value={false} name='status' className='mx-2 w-[20px] h-[20px] text-[20px]'  /> Deactive
             </div>
             
             <input type="submit" className='bg-[#4B49AC] mb-8 mt-7 text-[18px] px-8 py-2 rounded-[10px] text-white' />
