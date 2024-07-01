@@ -2,6 +2,7 @@ const adminLogin = require('./admin/adminLogin');
 const registerAdmin = require('./admin/resgisterAdmin');
 const addCourse = require('./course/addCourse');
 const changeStatus = require('./course/changeStatus');
+const deleteSingleCourse = require('./course/deleteSingleCourse');
 const readCourse = require('./course/readCourse');
 const readSingleCourse = require('./course/readSingleCourse');
 const updateCourse = require('./course/updateCourse');
@@ -13,5 +14,6 @@ module.exports = {
     readCourse,
     changeStatus,
     readSingleCourse,
-    updateCourse
+    updateCourse,
+    deleteSingleCourse
 }
