@@ -1,13 +1,35 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { mainContext } from '../Context';
 import Header from '../Common/Header';
 import Sidebar from '../Common/Sidebar';
 import Footer from '../Common/Footer';
-import prev from '../img/generic-image-file-icon-hi.png'
+import prev from '../img/generic-image-file-icon-hi.png';
+import axios from 'axios'
 
 
 function Addvideo() {
   let {changemenu} = useContext(mainContext);
+  const [courseData, setCourseData] = useState([]);
+  const [filePath, setFilePath] = useState('');
+
+  const handleFetchCourse = async () => {
+    try {
+
+      const response = await axios.get('http://localhost:5200/course/true_courses');
+
+      if (response.status !== 200) return alert('Something went wrong');
+
+      setFilePath(response.data.filePath);
+
+      setCourseData(response.data.data);
+
+    } catch (error) {
+      console.log(error);
+      alert('Something went wrong');
+    }
+  };
+
+  useEffect(() => { handleFetchCourse() }, []);
   return (
     <div>
 
@@ -26,7 +48,12 @@ function Addvideo() {
           <form action="">
             Course Category
             <select name="coursescat" id="" className='w-full border my-3 border-gray-400 h-[50px]'>
-              <option value="" className=''>php</option>
+              {
+                courseData.map((item, index) => (
+                  <option value={item._id} className=''>{item.coursename}</option>
+                ))
+              }
+             
             </select>
             Video Topic
             <input type="text" className='border border-gray-400 w-full h-[50px] mb-3 mt-2 px-4 '  />

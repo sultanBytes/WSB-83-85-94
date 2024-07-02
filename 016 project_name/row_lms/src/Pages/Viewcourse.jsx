@@ -15,8 +15,6 @@ function Viewcourse() {
   const [filePath, setFilePath] = useState('');
   const [checked, setChecked] = useState([]);
 
-  console.log(checked);
-
   const handleFetchCourse = async () => {
     try {
 
@@ -90,10 +88,28 @@ function Viewcourse() {
       newArr.splice(currentIndex, 1);
       setChecked(newArr);
     }
-
-  
-
     }
+
+    const handleMultiDelete = async()=>{
+      if (!window.confirm('Are you sure to delete')) return;
+      try{
+      
+     const response = await axios.delete('http://localhost:5200/course/multi_delete', {data: checked}, {
+        headers: {
+          'Content-Type': 'application/json'
+          }
+          
+      });
+      if(response.status !== 200) return alert('Something went wrong');
+
+      handleFetchCourse();
+    }
+    catch(error){
+      alert('Something went wrong');
+    }
+      
+    };
+
   return (
     <div>
 
@@ -114,7 +130,7 @@ function Viewcourse() {
                   <th>S.no</th>
                   <th>
                     <input type="checkbox" />
-                    <button>Delete</button>
+                    <button className='bg-[red] p-[6px_10px] rounded' onClick={handleMultiDelete}>Delete</button>
                   </th>
                   <th>Course Name</th>
                   <th>Fees</th>

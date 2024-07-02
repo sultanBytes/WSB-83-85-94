@@ -5,6 +5,7 @@ const changeStatus = require('./course/changeStatus');
 const deleteSingleCourse = require('./course/deleteSingleCourse');
 const readCourse = require('./course/readCourse');
 const readSingleCourse = require('./course/readSingleCourse');
+const trueCourses = require('./course/trueCourses');
 const updateCourse = require('./course/updateCourse');
 
 module.exports = {
@@ -15,5 +16,6 @@ module.exports = {
     changeStatus,
     readSingleCourse,
     updateCourse,
-    deleteSingleCourse
+    deleteSingleCourse,
+    trueCourses
 }
