@@ -17,45 +17,50 @@ function Register() {
 
     // useEffect(()=>{main()},[]);
     const formValidation = ()=>{
-        let isValid = true;
+
+        const newArr = {};
         //check email
         const emailPattren = /^[^@]+@[^@]+\.[^@]+$/;
 
         const ifEmail = emailPattren.test(data.email);
 
         if(!ifEmail) {
-            setErrors({...errors, email: 'please provoide a valid email'});
-            isValid = false;
+            newArr.email = 'Please enter valid email';
         }
         
         const passwordPattern = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,14}$/;
         const ifPassword = passwordPattern.test(data.password);
 
         if(!ifPassword) {
-            setErrors({...errors, password: 'Please include at least one lower case, one upper case, special charactor, minimum length 8 and maximum 14'});
-            isValid = false;
+            newArr.password = 'Please include at least one lower case, one upper case, special charactor, minimum length 8 and maximum 14';
         }
 
         const ifCpassword = data.password === data.cpassword;
 
         if(!ifCpassword) {
-            setErrors({...errors, cpassword: 'password and confirm password does not match'});
-            isValid = false;
+            newArr.cpassword = 'password and confirm password does not match'
         }
 
-        console.log(errors);
-        // setTimeout(()=>{
-        //     setErrors({});
-        // }, 5000)
-        return isValid;
+        setErrors(newArr);
+
+        const keysLength = Object.keys(newArr).length;
+        if(keysLength === 0){
+            return true;
+        }
+        else{
+            return false;
+        }
+        
     };
 
     const handleFormSubmit = async(e)=>{
         e.preventDefault();
-        const ifFormValid =await formValidation();
-        console.log(errors.cpassword);
-
-        if(!ifFormValid) return;
+        const ifFormValid = formValidation();
+        
+        if(!ifFormValid){
+            setTimeout(()=>{setErrors({})},4000);
+            return;
+        }
 //abc!123ABC098
     };
   return (
@@ -73,17 +78,17 @@ function Register() {
                   <div>
                       <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your email</label>
                       <input type="email" name="email" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="name@company.com" required="" onChange={(e)=>{setData({...data, email:e.target.value})}}/>
-                      <span className='text-[red]'>{errors.email}</span>
+                      {errors.email && <span className='text-[red]'>{errors.email}</span>}
                   </div>
                   <div>
                       <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
                       <input type="password" name="password" id="password" placeholder="••••••••" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required="" onChange={(e)=>{setData({...data, password:e.target.value})}}/>
-                      <span className='text-[red]'>{errors.password}</span>
+                      {errors.password && <span className='text-[red]'>{errors.password}</span>}
                   </div>
                   <div>
                       <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Confirm password</label>
                       <input type="password" name="cpassword" id="cpassword" placeholder="••••••••" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" onChange={(e)=>{setData({...data, cpassword:e.target.value})}} required=""/>
-                      <span className='text-[red]'>{errors.cpassword}</span>
+                      {errors.cpassword && <span className='text-[red]'>{errors.cpassword}</span>}
                   </div>
                   <div class="flex items-center justify-between">
                       <div class="flex items-start">
@@ -111,3 +116,8 @@ function Register() {
 }
 
 export default Register
+
+//exec
+//test
+//match
+//replace
