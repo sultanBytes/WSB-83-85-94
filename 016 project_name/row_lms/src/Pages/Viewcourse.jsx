@@ -14,6 +14,12 @@ function Viewcourse() {
   const [courseData, setCourseData] = useState([]);
   const [filePath, setFilePath] = useState('');
   const [checked, setChecked] = useState([]);
+  const [pageno, setPageno] = useState(1);
+  const [pageWiseData, setPageWiseData] = useState([]);
+
+
+
+ 
 
   const handleFetchCourse = async () => {
     try {
@@ -102,6 +108,7 @@ function Viewcourse() {
       });
       if(response.status !== 200) return alert('Something went wrong');
 
+      setChecked([]);
       handleFetchCourse();
     }
     catch(error){
@@ -109,6 +116,23 @@ function Viewcourse() {
     }
       
     };
+
+    const handleSearch =async (e)=>{
+      if(!e.target.value) return handleFetchCourse();
+      try{
+        const response = await axios.get(`http://localhost:5200/course/search_courses/${e.target.value}`);
+        if(response.status !== 200) return alert('Something went wrong');
+        setCourseData(response.data.data)
+      }
+      catch(error){
+        alert('Something went wrong');
+      }
+    };
+
+    useEffect(()=>{
+      const pagedata =  courseData.slice((pageno - 1) * 10, ((pageno - 1) * 10) + 10);
+      setPageWiseData(pagedata);
+     },[]);
 
   return (
     <div>
@@ -123,6 +147,7 @@ function Viewcourse() {
           <h1 className='text-[25px] font-[500] mb-[10px]'>
             Course Table
           </h1>
+          <input type="text" placeholder="search" className='w-full border border-black p-[10px_20px]' onChange={handleSearch} />
           <div className=''>
             <div className='bg-white w-[100%] mb-[50px] p-4 h-full rounded-[20px]'>
               <table >
@@ -142,7 +167,7 @@ function Viewcourse() {
                 </tr>
 
                 {
-                  courseData.map((course, i) => {
+                  pageWiseData.map((course, i) => {
                     return (
                       <tr>
                         <td>{i + 1}</td>
@@ -173,6 +198,10 @@ function Viewcourse() {
                 }
 
               </table>
+
+              <div >
+                
+              </div>
             </div>
           </div>
           <Footer />
