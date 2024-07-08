@@ -16,6 +16,10 @@ function Viewcourse() {
   const [checked, setChecked] = useState([]);
   const [pageno, setPageno] = useState(1);
   const [pageWiseData, setPageWiseData] = useState([]);
+  const [totalBtns, setTotalBtns] = useState(null);
+  const [allBtns, setAllBtns] = useState([]);
+
+  console.log(pageno);
 
 
 
@@ -31,6 +35,9 @@ function Viewcourse() {
       setFilePath(response.data.filePath);
 
       setCourseData(response.data.data);
+      const totalBtn = Math.ceil(response.data.data.length / 10);
+
+      setTotalBtns(totalBtn);
 
     } catch (error) {
       console.log(error);
@@ -132,9 +139,33 @@ function Viewcourse() {
     useEffect(()=>{
       const pagedata =  courseData.slice((pageno - 1) * 10, ((pageno - 1) * 10) + 10);
       setPageWiseData(pagedata);
-     },[]);
+     },[pageno]);
 
+
+     
+     useEffect(()=>{
+      const pagedata = [];
+
+      pagedata.push(<button className={`p-[8px_20px] mx-[5px] bg-[lightblue]`} value={1} onClick={(e)=>{setPageno(Number(e.target.value))}}>First</button>);
+      pagedata.push(<button className={`p-[8px_20px] mx-[5px] bg-[lightblue]`}  onClick={(e)=>{setPageno(pageno - 1)}}>Pre</button>);
+
+      for(let i = 1; i <= totalBtns; i++){
+        if(i > (pageno - 3) && i < (pageno + 3)){
+          pagedata.push(<button className={`p-[8px_20px] mx-[5px]  ${(i === pageno) ? 'bg-[blue]' : 'bg-[lightblue]'}`} value={i} onClick={(e)=>{setPageno(Number(e.target.value))}}>{i}</button>);
+        }
+       
+      }
+
+      pagedata.push(<button className={`p-[8px_20px] mx-[5px] bg-[lightblue]`} onClick={(e)=>{setPageno(pageno + 1)}}>Next</button>);
+      pagedata.push(<button className={`p-[8px_20px] mx-[5px] bg-[lightblue]`} value={totalBtns} onClick={(e)=>{setPageno(Number(e.target.value))}}>Last</button>);
+     
+
+      setAllBtns(pagedata);
+     },[totalBtns, pageno]);
+
+     let srNo = (pageno * 10) - 9;
   return (
+   
     <div>
 
       <Header />
@@ -165,12 +196,15 @@ function Viewcourse() {
                   <th>Status</th>
                   <th>Action</th>
                 </tr>
+                
 
                 {
+                        
                   pageWiseData.map((course, i) => {
+              
                     return (
                       <tr>
-                        <td>{i + 1}</td>
+                        <td>{srNo++}</td>
                         <td>
                           <input type="checkbox" onClick={handleCheckInput} value={course._id} />
                         </td>
@@ -194,6 +228,9 @@ function Viewcourse() {
                         </td>
                       </tr>
                     )
+
+
+                    // srNo++;
                   })
                 }
 
@@ -203,6 +240,11 @@ function Viewcourse() {
                 
               </div>
             </div>
+          </div>
+          <div className='text-center py-[20px]' >
+          {
+            allBtns
+          }
           </div>
           <Footer />
         </div>
