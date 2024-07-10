@@ -1,3 +1,3 @@
-// const otpSaver =new map();
+const otpSave = new Map();
 
-// module.exports = otpSaver;
+module.exports = otpSave;

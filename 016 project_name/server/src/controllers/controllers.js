@@ -12,6 +12,7 @@ const searchCourses = require('./course/searchCourse');
 const trueCourses = require('./course/trueCourses');
 const updateCourse = require('./course/updateCourse');
 const otpGenrator = require('./otp/otpGenrator');
+const registerUser = require('./users/registerUser');
 
 //video controllers
 const addVideo = require('./videos/addVideo');
@@ -30,5 +31,6 @@ module.exports = {
     addVideo,
     readVideos,
     searchCourses,
-    otpGenrator
+    otpGenrator,
+    registerUser
 }

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Footer from '../Common/Footer'
 import HeaderTwo from '../Common/HeaderTwo'
 import { Link } from 'react-router-dom'
+import axios from 'axios';
 
 function Register() {
     const [data, setData] = useState({});
@@ -9,6 +10,7 @@ function Register() {
     const [ifOtp, setIfOtp] = useState(false);
     const [otpBtn, setOtpBtn] = useState(false);
     const [btnText, setBtnText] = useState('Genrate OTP');
+    const [useApproved, setUserApproved] = useState(false);
 
     // const main = ()=>{
     // //    regular expression
@@ -64,14 +66,32 @@ function Register() {
             setTimeout(()=>{setErrors({})},4000);
             return;
         }
+
+            // if(ifRemember){
+
+            // }
+
+            if(!useApproved) return alert('please accept term and conditions')
+
+        console.log(data);
+        try{
+            const response = await axios.post('http://localhost:5200/user/register_user', data);
+
+            if(response.status !== 200) return alert('something went wrong');
+            console.log(response);
+        }
+        catch(error){
+            console.log(error)
+            alert('something went wrong');
+        }
 //abc!123ABC098
     };
 
-    const handleOtpGen = ()=>{
+    const handleOtpGen =async ()=>{
         setIfOtp(true);
         setOtpBtn(true);
 
-        let counter = 10;
+        let counter = 30;
         setBtnText(`Resend OTP in ${counter}s`);
         counter--;
 
@@ -86,6 +106,16 @@ function Register() {
             }
             counter--;
         }, 1000);
+
+        try{
+            const response = await axios.post('http://localhost:5200/otp/genrate_otp', {email: data.email});
+
+            if(response.status !== 200) return alert('something went wrong');
+        }
+        catch(error){
+            console.log(error)
+            alert('something went wrong');
+        }
 
        
     }
@@ -129,7 +159,7 @@ function Register() {
                   <div class="flex items-center justify-between">
                       <div class="flex items-start">
                           <div class="flex items-center h-5">
-                            <input id="remember" aria-describedby="remember" type="checkbox" class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800" required=""/>
+                            <input id="remember" aria-describedby="remember" checked={useApproved} onChange={(e)=>{setUserApproved(e.target.checked)}} type="checkbox" class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800" required=""/>
                           </div>
                           <div class="ml-3 text-sm">
                             <label for="remember" class="text-gray-500 dark:text-gray-300">I accept the Terms and Conditions</label>
