@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import Footer from '../Common/Footer'
 import HeaderTwo from '../Common/HeaderTwo'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 function Register() {
+    const nav = useNavigate();
+
     const [data, setData] = useState({});
     const [errors, setErrors] = useState({});
     const [ifOtp, setIfOtp] = useState(false);
@@ -21,7 +24,21 @@ function Register() {
     // };
 
     // useEffect(()=>{main()},[]);
+
+    // useEffect(()=>{
+    //     const currentDate = new Date();
+
+    //     const time = `${currentDate.getHours()}:${currentDate.getMinutes()}:${currentDate.getSeconds() + 10}`;
+
+    //     const newDate = new Date(currentDate.toDateString() + ' ' + time);
+
+    //     console.log(newDate);
+
+    //     Cookies.set('tmp', 'gagan', {expires: newDate});
+    // },[]);
     const formValidation = ()=>{
+
+       
 
         const newArr = {};
         //check email
@@ -78,7 +95,16 @@ function Register() {
             const response = await axios.post('http://localhost:5200/user/register_user', data);
 
             if(response.status !== 200) return alert('something went wrong');
-            console.log(response);
+            if(response.status === 400) return alert(response.data.data.message);
+
+           
+
+            Cookies.set('user-data', response.data.data, {expires: 7});
+
+            alert('User registered successfully');
+
+
+            nav('/');
         }
         catch(error){
             console.log(error)
