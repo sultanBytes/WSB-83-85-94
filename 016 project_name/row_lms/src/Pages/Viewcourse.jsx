@@ -5,6 +5,7 @@ import Sidebar from '../Common/Sidebar';
 import Footer from '../Common/Footer';
 import axios from 'axios';
 import { useNavigate } from 'react-router';
+import Cookies from 'js-cookie';
 
 function Viewcourse() {
   const nav = useNavigate();
@@ -18,17 +19,26 @@ function Viewcourse() {
   const [pageWiseData, setPageWiseData] = useState([]);
   const [totalBtns, setTotalBtns] = useState(null);
   const [allBtns, setAllBtns] = useState([]);
+  // const [admindata, setAdmindata] = useState('');
 
-  console.log(pageno);
-
-
-
+  // useEffect(()=>{
+  //  const data = JSON.parse( Cookies.get('admin'));
+  //  setAdmindata(data);
+  // },[]);
  
 
   const handleFetchCourse = async () => {
+    const data = JSON.parse( Cookies.get('admin'));
+    // setAdmindata(data);
+
     try {
 
-      const response = await axios.get('http://localhost:5200/course/read_courses');
+      const response = await axios.get('http://localhost:5200/course/read_courses',{
+        // data:{},
+        headers: {
+          'Authorization': `Bearer ${data.auth}`
+        }
+      });
 
       if (response.status !== 200) return alert('Something went wrong');
 

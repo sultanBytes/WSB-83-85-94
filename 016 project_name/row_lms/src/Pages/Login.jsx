@@ -41,9 +41,7 @@ function Login() {
     if(response.status === 200){
       const data = await response.json();
 
-      // console.log(data.data[0]);
-
-      Cookies.set('admin', JSON.stringify(data.data[0]));
+      Cookies.set('admin', JSON.stringify({...data.data, auth:data.auth}));
       nav('/dashboard');
     }
     else{
