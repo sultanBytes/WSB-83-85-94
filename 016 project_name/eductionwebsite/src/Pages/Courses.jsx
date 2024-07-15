@@ -5,12 +5,24 @@ import { faAngleDown, faAngleUp, faArrowDown, faArrowsUpDown, faSearch } from '@
 import { tabsdata } from '../Common/AllData'
 import SearchData from '../Common/SearchData'
 import Header from '../Common/Header'
+import axios from 'axios'
 
 function Courses() {
 
   let [catelog , setcatelog] = useState('')
   let [search,setsearch]=useState('')
-  let [faq,setFaq]= useState(false)
+  let [faq,setFaq]= useState(false);
+
+  const [courseData, setCourseData] = useState([]);
+
+  const getCousres = async(req,res)=>{
+    const response =await axios.get('http://localhost:5200/course/true_courses');
+    setCourseData(response.data.data);
+  };
+
+  useEffect(()=>{
+    getCousres();
+  },[]);
 
 
  
@@ -22,6 +34,26 @@ function Courses() {
     
   },[])
   
+
+  const handleShopCourse = async(e)=>{
+
+    const courseDetails = courseData.filter((item)=> item._id === e.target.value);
+
+    console.log(courseDetails);
+
+    try{
+      const response = await axios.post('http://localhost:5200/payment/req-payment', {
+        data:{
+         items: JSON.stringify(courseDetails)
+        },
+        headers:{}
+      })
+    }
+    catch(error){
+      console.log(error);
+      alert('something went wrong');
+    }
+  }
 
 
   return (
@@ -48,12 +80,41 @@ function Courses() {
             </form>
 
             <div className='grid grid-cols-3 gap-8 mt-[40px]'>
-            {
+              <table className='w-full'>
+                <thead>
+                  <tr>
+                    <th>Sr. no.</th>
+                    <th>name</th>
+                    <th>price</th>
+                    <th>duration</th>
+                    <th>
+                      <button>Shop</button>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {
+                    courseData.map((course, index)=>(
+                      <tr>
+                      <td>{index + 1}</td>
+                      <td>{course.coursename}</td>
+                      <td>{course.courseprice}</td>
+                      <td>{course.courseduration}</td>
+                      <td>
+                      <button value={course._id} className='p-[8px_12px] bg-[cyan] block' onClick={handleShopCourse}>Buy now</button>
+                    </td>
+                    </tr>
+                    ))
+                  }
+                 
+                </tbody>
+              </table>
+            {/* {
               catelog!=""  ?
-              <SearchData category={catelog} searchcat={search}   />
+              // <SearchData category={catelog} searchcat={search}   />
               :
               ""
-            }
+            } */}
             </div>
         </div>
         <div className=' py-5 px-3'>
