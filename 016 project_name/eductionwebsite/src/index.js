@@ -10,6 +10,8 @@ import Team from './Pages/Team';
 import Courses from './Pages/Courses';
 import Login from './Pages/Login';
 import Register from './Pages/Register';
+import PaymentSuccess from './Pages/PaymentSuccess';
+import PaymentFailed from './Pages/PaymentFailed';
 
 let rout = createBrowserRouter([
   {
@@ -39,6 +41,14 @@ let rout = createBrowserRouter([
   {
     path:"/register",
     element:<Register/>
+  },
+  {
+    path:'/success',
+    element:<PaymentSuccess/>
+  },
+  {
+    path:'/cancel',
+    element:<PaymentFailed/>
   }
  
 

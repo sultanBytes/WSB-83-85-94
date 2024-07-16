@@ -5,7 +5,8 @@ import { faAngleDown, faAngleUp, faArrowDown, faArrowsUpDown, faSearch } from '@
 import { tabsdata } from '../Common/AllData'
 import SearchData from '../Common/SearchData'
 import Header from '../Common/Header'
-import axios from 'axios'
+import axios from 'axios';
+import {loadStripe} from '@stripe/stripe-js';
 
 function Courses() {
 
@@ -37,16 +38,17 @@ function Courses() {
 
   const handleShopCourse = async(e)=>{
 
+    const stripe = loadStripe('pk_test_51LiyTNSH4QsKt7gApjEgxNySurOKQbOlLuc0XxwsqJek8ItuUyPQLIwIThhZ7Q4Ut7dYzWkrlg15v5kgV2opUJF6002wEvois3');
+
     const courseDetails = courseData.filter((item)=> item._id === e.target.value);
 
     console.log(courseDetails);
 
     try{
-      const response = await axios.post('http://localhost:5200/payment/req-payment', {
-        data:{
-         items: JSON.stringify(courseDetails)
-        },
-        headers:{}
+      const response = await axios.post('http://localhost:5200/payment/req-payment',{data: courseDetails});
+
+      stripe.redirectToCheckout({
+        sessionId: response.data.session
       })
     }
     catch(error){
