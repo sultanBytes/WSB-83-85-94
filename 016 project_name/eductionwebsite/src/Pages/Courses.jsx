@@ -38,7 +38,7 @@ function Courses() {
 
   const handleShopCourse = async(e)=>{
 
-    const stripe = loadStripe('pk_test_51LiyTNSH4QsKt7gApjEgxNySurOKQbOlLuc0XxwsqJek8ItuUyPQLIwIThhZ7Q4Ut7dYzWkrlg15v5kgV2opUJF6002wEvois3');
+    const stripe =await loadStripe('pk_test_51LiyTNSH4QsKt7gApjEgxNySurOKQbOlLuc0XxwsqJek8ItuUyPQLIwIThhZ7Q4Ut7dYzWkrlg15v5kgV2opUJF6002wEvois3');
 
     const courseDetails = courseData.filter((item)=> item._id === e.target.value);
 
